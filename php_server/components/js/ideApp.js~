@@ -1,0 +1,79 @@
+var ideApp = angular.module('ideApp', ['ui.bootstrap', 'ui.ace']);
+
+ideApp.controller('ideController', function ideController($scope, $http) {
+
+    $scope.code = "#include <iostream>";
+    $scope.input = "1 2 3 4 5 6";
+    $scope.output = "out 1, out 2";
+
+    $scope.submit = function(code, input) {
+        //alert(code);
+        $scope.code = code;
+        $scope.input = input;
+
+        send();
+        if ($scope.status) {
+            alert("Issue");
+        } else {
+            //alert($scope.output);
+            $scope.result = true;
+        }
+
+    };
+
+    $scope.codeLoaded = function(_editor) {
+        // Editor part
+        var _session = _editor.getSession();
+        var _renderer = _editor.renderer;
+
+        // Options
+        _editor.setReadOnly(false);
+        _session.setUndoManager(new ace.UndoManager());
+        _renderer.setShowGutter(true);
+
+        // Events
+        _editor.on("changeSession", function() {
+        });
+        _session.on("change", function() {
+            $scope.code = _session.getValue();
+        });
+    };
+
+    $scope.inputLoaded = function(_editor) {
+        // Editor part
+        var _session = _editor.getSession();
+        var _renderer = _editor.renderer;
+
+        // Options
+        _editor.setReadOnly(false);
+        _session.setUndoManager(new ace.UndoManager());
+        _renderer.setShowGutter(true);
+
+        // Events
+        _editor.on("changeSession", function() {
+        });
+        _session.on("change", function() {
+            $scope.input = _session.getValue();
+        });
+    };
+
+    var send = function() {
+        postData = {
+            code: $scope.code,
+            input: $scope.input
+        };
+        $http({
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            url: 'http://localhost/cb2/ide/submit_cpp',
+            method: "POST",
+            data: postData,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).success(function(data, status, headers, config) {
+            $scope.output = data.result; // assign  $scope.persons here as promise is resolved here 
+            // alert($scope.output);
+        }).error(function(data, status, headers, config) {
+            $scope.status = status;
+        });
+    };
+
+});

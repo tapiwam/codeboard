@@ -1,0 +1,458 @@
+-- phpMyAdmin SQL Dump
+-- version 4.0.4
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Dec 31, 2013 at 05:47 PM
+-- Server version: 5.6.12-log
+-- PHP Version: 5.4.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `cb3`
+--
+CREATE DATABASE IF NOT EXISTS `cb3` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `cb3`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `announce`
+--
+
+CREATE TABLE IF NOT EXISTS `announce` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `author` varchar(25) NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `classes`
+--
+
+CREATE TABLE IF NOT EXISTS `classes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `term` varchar(15) NOT NULL COMMENT 'e.g. fall2012',
+  `class_name` varchar(25) NOT NULL COMMENT 'name of class',
+  `section` varchar(8) NOT NULL DEFAULT '1' COMMENT 'section number',
+  `instructor` varchar(25) NOT NULL COMMENT 'instructor username',
+  `lang` varchar(15) NOT NULL DEFAULT 'cpp' COMMENT 'e.g. cpp, java, c',
+  `passcode` varchar(25) NOT NULL DEFAULT 'codeboard',
+  `class_name_id` varchar(75) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `classes`
+--
+
+INSERT INTO `classes` (`id`, `term`, `class_name`, `section`, `instructor`, `lang`, `passcode`, `class_name_id`, `active`) VALUES
+(3, 'spring2014', 'test1', '3', 'tapiwa', 'cpp', 'passcode', 'spring2014-test1-3-tapiwa', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `class_instructors`
+--
+
+CREATE TABLE IF NOT EXISTS `class_instructors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `class_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `username` varchar(25) NOT NULL,
+  `owner` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `class_instructors`
+--
+
+INSERT INTO `class_instructors` (`id`, `class_id`, `user_id`, `username`, `owner`) VALUES
+(1, 1, 110, 'tapiwa', 110),
+(2, 2, 110, 'tapiwa', 110),
+(3, 3, 110, 'tapiwa', 110);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `codeboard_sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `codeboard_sessions` (
+  `session_id` varchar(40) NOT NULL DEFAULT '0',
+  `ip_address` varchar(45) NOT NULL DEFAULT '0',
+  `user_agent` varchar(120) NOT NULL,
+  `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_data` text NOT NULL,
+  PRIMARY KEY (`session_id`),
+  KEY `last_activity_idx` (`last_activity`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `codeboard_sessions`
+--
+
+INSERT INTO `codeboard_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
+('53f1c51999bf64bb5fa8cb87289d07f4', '127.0.0.1', 'Java/1.7.0_25', 1388447421, ''),
+('65105c30d8b1ee5f990cfac26e900f0d', '::1', 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 1388202696, ''),
+('69a0ff68380723a93d691e3eaa2523dd', '::1', 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 1388426577, 'a:9:{s:8:"username";s:6:"tapiwa";s:12:"is_logged_in";b:1;s:2:"id";s:3:"110";s:10:"first_name";s:6:"Tapiwa";s:9:"last_name";s:6:"Maruni";s:5:"level";s:1:"2";s:5:"email";s:23:"tapiwa.maruni@gmail.com";s:1:"p";s:32:"b4effb03f873c12e9de335c3a7d2794a";s:10:"student_id";s:1:"0";}'),
+('cc2ad95faf3ea47f166e4a226490a2ed', '::1', 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 1388447016, ''),
+('f26a33e183852e92bd228fa462ccf4f1', '::1', 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 1388506619, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log_login`
+--
+
+CREATE TABLE IF NOT EXISTS `log_login` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+
+--
+-- Dumping data for table `log_login`
+--
+
+INSERT INTO `log_login` (`id`, `user_id`, `time`) VALUES
+(7, 110, '2013-12-27 18:07:41'),
+(8, 110, '2013-12-27 21:43:25'),
+(9, 110, '2013-12-27 22:23:19'),
+(10, 111, '2013-12-27 22:26:35'),
+(11, 110, '2013-12-30 18:03:02'),
+(12, 110, '2013-12-31 16:58:41');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `registration`
+--
+
+CREATE TABLE IF NOT EXISTS `registration` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `class_id` int(11) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `registration`
+--
+
+INSERT INTO `registration` (`id`, `user_id`, `class_id`, `active`) VALUES
+(1, 111, 3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_announcements`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_announcements` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `author` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_blogs`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_blogs` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `session_id` int(6) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `author` varchar(255) NOT NULL,
+  `created` datetime NOT NULL,
+  `updated` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_files`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_files` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `prog_id` int(6) NOT NULL,
+  `file_name` varchar(25) NOT NULL,
+  `main` tinyint(1) NOT NULL DEFAULT '0',
+  `file_content` text NOT NULL,
+  `admin_file` tinyint(1) NOT NULL DEFAULT '0',
+  `multi_part` tinyint(1) NOT NULL DEFAULT '0',
+  `stream_type` varchar(10) NOT NULL,
+  `meta` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_gradebook`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_gradebook` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `user_id` int(9) NOT NULL,
+  `prog_id` int(9) NOT NULL,
+  `total` int(9) NOT NULL,
+  `avg` double NOT NULL,
+  `grade` varchar(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `spring2014_test1_gradebook`
+--
+
+INSERT INTO `spring2014_test1_gradebook` (`id`, `user_id`, `prog_id`, `total`, `avg`, `grade`) VALUES
+(1, 111, 0, 0, 0, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_log`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_log` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `type` varchar(10) NOT NULL,
+  `hash` varchar(50) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `spring2014_test1_log`
+--
+
+INSERT INTO `spring2014_test1_log` (`id`, `user_id`, `item_id`, `type`, `hash`, `time`) VALUES
+(1, 111, 1, 'session', '', '2013-12-27 22:44:56'),
+(2, 111, 1, 'session', '', '2013-12-27 22:49:13'),
+(3, 111, 1, 'session', '', '2013-12-27 22:49:53'),
+(4, 111, 1, 'session', '', '2013-12-27 22:50:49'),
+(5, 111, 1, 'session', '', '2013-12-27 22:51:01'),
+(6, 111, 1, 'session', '', '2013-12-27 22:51:52');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_log_submits`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_log_submits` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `prog_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `score` int(11) NOT NULL,
+  `c_points` int(11) NOT NULL,
+  `e_points` int(11) NOT NULL,
+  `d_points` int(11) NOT NULL,
+  `s_points` int(11) NOT NULL,
+  `late` int(11) NOT NULL,
+  `e_report` text NOT NULL,
+  `d_report` text NOT NULL,
+  `report` text NOT NULL,
+  `submits` int(4) NOT NULL DEFAULT '1',
+  `hash` varchar(50) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_programs`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_programs` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `class_id` int(6) NOT NULL,
+  `session_id` int(6) NOT NULL,
+  `prog_name` varchar(25) NOT NULL,
+  `type` varchar(10) NOT NULL,
+  `num_tc` int(3) NOT NULL DEFAULT '0',
+  `num_source` int(3) NOT NULL DEFAULT '0',
+  `num_input` int(3) NOT NULL DEFAULT '0',
+  `num_output` int(3) NOT NULL DEFAULT '0',
+  `num_addition` int(3) NOT NULL DEFAULT '0',
+  `s_points` int(3) NOT NULL DEFAULT '0',
+  `d_points` int(3) NOT NULL DEFAULT '0',
+  `e_points` int(3) NOT NULL DEFAULT '0',
+  `c_points` int(3) NOT NULL DEFAULT '0',
+  `late` int(3) NOT NULL DEFAULT '0',
+  `input` tinyint(1) NOT NULL DEFAULT '1',
+  `output` tinyint(1) NOT NULL DEFAULT '1',
+  `stage` tinyint(1) NOT NULL DEFAULT '1',
+  `published` tinyint(1) NOT NULL DEFAULT '0',
+  `description` text NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `graded` tinyint(1) NOT NULL DEFAULT '1',
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_results`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_results` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `prog_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `score` int(11) NOT NULL,
+  `c_points` int(11) NOT NULL,
+  `e_points` int(11) NOT NULL,
+  `d_points` int(11) NOT NULL,
+  `s_points` int(11) NOT NULL,
+  `late` int(11) NOT NULL,
+  `e_report` text NOT NULL,
+  `d_report` text NOT NULL,
+  `report` text NOT NULL,
+  `submits` int(3) NOT NULL DEFAULT '1',
+  `hash` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_sessions` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `session_name` varchar(25) NOT NULL,
+  `start` datetime NOT NULL,
+  `end` datetime NOT NULL,
+  `late` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `spring2014_test1_sessions`
+--
+
+INSERT INTO `spring2014_test1_sessions` (`id`, `session_name`, `start`, `end`, `late`, `active`) VALUES
+(1, 'lab1', '2013-12-27 17:27:09', '2014-01-03 17:27:09', '2014-01-04 17:27:09', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_sr`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_sr` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `prog_id` int(6) NOT NULL,
+  `user_id` int(6) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `file` text NOT NULL,
+  `version` int(6) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_student_files`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_student_files` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `user_id` int(6) NOT NULL,
+  `prog_id` int(6) NOT NULL,
+  `file_name` varchar(25) NOT NULL,
+  `content` text NOT NULL,
+  `stream_type` varchar(10) NOT NULL,
+  `version` int(6) NOT NULL DEFAULT '1',
+  `meta` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spring2014_test1_testcases`
+--
+
+CREATE TABLE IF NOT EXISTS `spring2014_test1_testcases` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `prog_id` int(6) NOT NULL,
+  `tc_name` varchar(25) NOT NULL,
+  `tc_num` int(3) NOT NULL,
+  `tcf` text NOT NULL,
+  `expf` text NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `version` int(3) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(25) NOT NULL,
+  `last_name` varchar(25) NOT NULL,
+  `username` varchar(25) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `level` int(1) NOT NULL DEFAULT '0',
+  `student_id` int(11) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=112 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `password`, `email`, `level`, `student_id`, `active`) VALUES
+(110, 'Tapiwa', 'Maruni', 'tapiwa', 'b4effb03f873c12e9de335c3a7d2794a', 'tapiwa.maruni@gmail.com', 2, 0, 1),
+(111, 'T', 'M', 'user1', '1a1dc91c907325c69271ddf0c944bc72', 't@gmail.com', 0, 300087035, 1);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

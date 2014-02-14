@@ -1,0 +1,174 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Admin_model extends CLASS_Model {
+	
+	function __construct(){
+		//parent::__construct();	
+		$this->load->dbforge();
+	}
+	
+	// ===========================================
+	// INITIALIZE REPO
+	// ===========================================
+	function initialize($term, $classname){
+		$oldmask = umask(0);
+		
+		if(!is_dir('files'))
+			mkdir('files', 0777);
+			
+		if (!is_dir("files/$term"))
+			mkdir("files/$term", 0777);
+		
+		if (!is_dir("files/$term/$classname"))
+			mkdir("files/$term/$classname", 0777);
+		
+		if (!is_dir("files/$term/$classname/tmp"))
+			mkdir("files/$term/$classname/tmp", 0777);
+		
+		if (!is_dir("files/$term/$classname/admin"))
+			mkdir("files/$term/$classname/admin", 0777);
+		
+		if (!is_dir("files/$term/$classname/students"))
+			mkdir("files/$term/$classname/students", 0777);
+		
+		if (!is_dir("files/$term/$classname/submits"))
+			mkdir("files/$term/$classname/submits", 0777);
+		
+		if (!is_dir("files/$term/$classname/submits/RCS"))
+			mkdir("files/$term/$classname/submits/RCS", 0777);
+		
+		if (!is_dir("files/$term/$classname/public"))
+			mkdir("files/$term/$classname/public", 0777);
+		
+		if (!is_dir("files/$term/$classname/public/RCS"))
+			mkdir("files/$term/$classname/public/RCS", 0777);
+		
+		umask($oldmask);
+		
+		if(is_dir("files/$term/$classname")) {
+			//echo 'files/'.$term.'/'.$classname . ' created<br />'; 
+			return true;
+		}
+		else {
+			//echo 'NOT created<br />';
+			return false;
+		}
+	}
+
+	// ==========================================================================
+	
+	function classes()
+	{
+		// return class list for given instructor
+		$this->db->where('instructor', $this->session->userdata('username'));
+		$q = $this->db->get('classes');
+		
+		if ($q->num_rows() > 0) {
+			foreach ($q->result() as $row)
+            {
+            	$data[] = $row;
+			}
+			return $data;
+		}
+	}
+	
+
+	function load_session_assignments($class_id, $session_id)
+	{
+		//$data = array();
+		
+		// ====================
+		// Use the id to get the class data
+		$classinfo = $this->load_class_info($class_id);
+		$classinfo =$classinfo[0];
+		
+		// find tyhe correct table
+		$p_table = $classinfo->term.'_'. $classinfo->class_name.'_programs';
+		
+		// grab from DB
+		$this->db->where('session_id', $session_id);
+		$d = $this->db->get($p_table);
+		if ($d->num_rows() > 0){
+			foreach ($d->result() as $r){
+				$data[] = $r;
+			}
+		}
+		
+		//print_r($data); die();
+		if( isset($data)) { return $data; }
+	}
+
+	function load_testcases($class_id, $session_id, $assign_id)
+	{
+		$classinfo = $this->load_class_info($class_id);
+		$classinfo =$classinfo[0];	
+			
+		// find tyhe correct table
+		$p_table = $classinfo->term.'_'. $classinfo->class_name.'_testcases';
+		
+		// grab from DB
+		$this->db->where('assign_id', $assign_id);
+		// select the latest version
+		$this->db->select_max('version');		// might have to group data
+		// 
+		$q = $this->db->get($p_table);
+		foreach ($q->result() as $i){
+			$data[] = $i;
+		}
+		return $data;
+	}
+	
+	
+		
+	function insert_tc_input($proginfo, $size, $tc_num ,$raw)
+	{
+		// compile and run first 
+		$data['class_id'] = $proginfo[0]->class_id;
+		$data['session_id'] = $proginfo[0]->session_id;
+		$data['assign_id'] = $proginfo[0]->id;
+		$classinfo = $this->admin_model->load_class_info($data['class_id']);
+		
+		$p_table = $classinfo[0]->term.'_'.$classinfo[0]->class_name.'_testcases';
+		
+		// loop through all the test cases and save these to the DB
+		for ($i=0; $i<$size; $i++)
+		{
+			// get the current version and increment the index of
+			$version = $this->db->select('version')
+				->where('assign_id', $data['assign_id'])
+				->where('tc_num', $tc_num)
+				->get($p_table)->row();
+				
+			echo "<hr />version::   "; print_r($version); //die();
+				
+			if (isset($version) && $version->version > 0 ) {
+				$data['version'] = $version->version + 1;
+			} else {
+				$data['version'] = 1;
+			}
+			
+			// set the other variales
+			$data['tc_input'] = $this->input->post('input_'.$i);
+			$data['tc_num']  = $i;
+			
+			// insert into DB
+			$this->db->insert($p_table, $data);
+		}
+		
+		// could insert into repository here
+	}
+
+	function delete_assignment($classid, $sessionid, $prog_id)
+	{
+		$classinfo = $this->admin_model->load_class_info($classid);
+		$tbl = $classinfo[0]->term . '_' . $classinfo[0]->class_name . '_programs';
+		
+		$this->db->where('class_id', $classid);
+		$this->db->where('session_id', $sessionid);
+		$this->db->where('id', $prog_id);
+		$status = $this->db->delete($tbl);
+		return $status;
+	}
+	
+	
+}

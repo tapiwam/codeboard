@@ -1,0 +1,29 @@
+/* 
+    Document   : custom
+    Created on : Dec 31, 2013, 8:03:25 PM
+    Author     : tmaruni
+    Description:
+        Purpose of the stylesheet follows.
+*/
+@import url(http://fonts.googleapis.com/css?family=Chau+Philomene+One);
+
+.navbar-brand {
+    font-family: 'Chau Philomene One', sans-serif;
+    font-size: 40px;
+}
+
+.jumbotron h1 {
+    font-family: 'Chau Philomene One', sans-serif;
+    font-size: 70px;
+}
+
+#tc_description {
+    border-radius: 3px;
+    border-style: outset;
+    border-color: #A7A7A7;
+    padding: 10px;
+}
+
+#menu_div {
+    background-color: #dddddd;
+}
